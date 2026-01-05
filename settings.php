@@ -27,6 +27,34 @@ defined('MOODLE_INTERNAL') || die();
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_emailusername', get_string('pluginname', 'local_emailusername'));
 
+    // Check if extended username characters is enabled (required for @ in usernames).
+    global $CFG;
+    if (empty($CFG->extendedusernamechars)) {
+        // Build URL to security settings.
+        $securityurl = new moodle_url('/admin/settings.php', ['section' => 'sitepolicies']);
+        $warningmsg = get_string('extendedusernamechars_warning', 'local_emailusername', $securityurl->out());
+
+        $settings->add(new admin_setting_heading(
+            'local_emailusername/extendedusernamechars_warning',
+            '',
+            '<div class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle mr-2"></i>
+                <strong>' . get_string('requiredsetting', 'local_emailusername') . '</strong><br>
+                ' . $warningmsg . '
+            </div>'
+        ));
+    } else {
+        // Show success message when properly configured.
+        $settings->add(new admin_setting_heading(
+            'local_emailusername/extendedusernamechars_ok',
+            '',
+            '<div class="alert alert-success">
+                <i class="fa fa-check-circle mr-2"></i>
+                ' . get_string('extendedusernamechars_ok', 'local_emailusername') . '
+            </div>'
+        ));
+    }
+
     // Enable/disable plugin.
     $settings->add(new admin_setting_configcheckbox(
         'local_emailusername/enabled',

@@ -140,8 +140,26 @@ Go to **Site Administration → Plugins → Local plugins → Email as Username*
 - Moodle 4.5 or higher (compatible with Moodle 5)
 - PHP 8.1 or higher
 - Email-based self-registration enabled
+- **Extended username characters enabled** (see below)
+
+### Required: Enable Extended Username Characters
+
+For email addresses to work as usernames (they contain the `@` symbol), you must enable this Moodle setting:
+
+1. Go to **Site Administration → Security → Site security settings**
+2. Find **"Allow extended characters in usernames"** (`extendedusernamechars`)
+3. Set it to **Yes**
+4. Save changes
+
+> **Note:** The plugin will show a warning in its settings page if this is not enabled.
 
 ## Changelog
+
+### v1.1.1
+- Added: Settings page warning when "Extended username characters" is not enabled
+- Added: Direct link to Site Policies settings from plugin
+- Added: Success indicator when properly configured
+- Improved: Documentation with clear setup requirements
 
 ### v1.1.0
 - Fixed: Hide username field now works properly

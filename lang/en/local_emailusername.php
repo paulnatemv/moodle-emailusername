@@ -49,5 +49,10 @@ $string['req_uppercase'] = 'One uppercase letter';
 $string['req_number'] = 'One number';
 $string['req_special'] = 'One special character';
 
+// Extended username characters warning.
+$string['requiredsetting'] = 'Required Setting';
+$string['extendedusernamechars_warning'] = 'This plugin requires "Allow extended characters in usernames" to be enabled for email addresses to work as usernames (the @ symbol). <a href="{$a}" class="alert-link">Click here to go to Site Policies settings</a> and enable "extendedusernamechars".';
+$string['extendedusernamechars_ok'] = 'Extended username characters is enabled. Email addresses can be used as usernames.';
+
 // Privacy.
 $string['privacy:metadata'] = 'The Email as Username plugin does not store any personal data. It only modifies the registration form behavior.';
