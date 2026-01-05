@@ -1,0 +1,122 @@
+/**
+ * Email as Username - Styles
+ *
+ * @package    local_emailusername
+ * @copyright  2025 BixAgency.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Password Requirements Container */
+.password-requirements-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 16px 20px;
+    border: 1px solid #dee2e6;
+    margin-top: -10px;
+}
+
+.password-requirements-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 12px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.password-requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+}
+
+.requirement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    font-size: 13px;
+}
+
+.requirement .req-icon {
+    font-size: 16px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #adb5bd;
+    transition: all 0.3s ease;
+}
+
+.requirement .req-text {
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+/* Met requirement state */
+.requirement.met {
+    background: #d4edda;
+    border-color: #28a745;
+}
+
+.requirement.met .req-icon {
+    color: #28a745;
+}
+
+.requirement.met .req-text {
+    color: #155724;
+    font-weight: 500;
+}
+
+/* Username field when readonly */
+#id_username[readonly] {
+    background-color: #e9ecef !important;
+    cursor: not-allowed !important;
+    color: #6c757d !important;
+}
+
+/* Info message styling */
+.alert.alert-info {
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #cfe2ff 0%, #b6d4fe 100%);
+    color: #084298;
+}
+
+/* Mobile responsive */
+@media (max-width: 576px) {
+    .password-requirements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .password-requirements-container {
+        padding: 12px 16px;
+    }
+
+    .requirement {
+        padding: 10px 14px;
+    }
+}
+
+/* Animation for requirement check */
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.requirement.met .req-icon {
+    animation: checkmark 0.3s ease-out;
+}

@@ -9,13 +9,19 @@
 define([], function() {
     'use strict';
 
+    /** @type {number} Minimum password length */
+    var minLength = 8;
+
     /**
      * Initialize the signup form modifications.
      *
      * @param {Object} config Configuration options.
      * @param {boolean} config.hideusername Whether to completely hide the username field.
+     * @param {number} config.minlength Minimum password length.
      */
     var init = function(config) {
+        minLength = config.minlength || 8;
+
         // Wait for DOM to be ready.
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
@@ -34,18 +40,47 @@ define([], function() {
     var setupForm = function(config) {
         var usernameField = document.getElementById('id_username');
         var emailField = document.getElementById('id_email');
+        var passwordField = document.getElementById('id_password');
 
-        if (!usernameField || !emailField) {
-            return;
+        // Setup username field.
+        if (usernameField && emailField) {
+            setupUsernameField(usernameField, emailField, config);
         }
 
+        // Setup password requirements.
+        if (passwordField) {
+            setupPasswordRequirements(passwordField);
+        }
+
+        // Reorder fields: Email first, then password.
+        reorderFields();
+    };
+
+    /**
+     * Setup username field behavior.
+     *
+     * @param {HTMLElement} usernameField Username input.
+     * @param {HTMLElement} emailField Email input.
+     * @param {Object} config Configuration.
+     */
+    var setupUsernameField = function(usernameField, emailField, config) {
         // Find the username form group (parent container).
-        var usernameGroup = usernameField.closest('.form-group, .fitem');
+        var usernameGroup = usernameField.closest('.form-group, .fitem, [data-groupname="username"]');
 
         if (config.hideusername) {
-            // Completely hide the username field.
+            // Completely hide the username field and its container.
             if (usernameGroup) {
                 usernameGroup.style.display = 'none';
+            }
+            usernameField.style.display = 'none';
+
+            // Also hide label if separate.
+            var label = document.querySelector('label[for="id_username"]');
+            if (label) {
+                var labelGroup = label.closest('.form-group, .fitem');
+                if (labelGroup) {
+                    labelGroup.style.display = 'none';
+                }
             }
         } else {
             // Make username field readonly with visual styling.
@@ -54,9 +89,7 @@ define([], function() {
             usernameField.style.cursor = 'not-allowed';
             usernameField.style.color = '#6c757d';
             usernameField.setAttribute('tabindex', '-1');
-
-            // Add a visual indicator.
-            usernameField.placeholder = getPlaceholderText();
+            usernameField.placeholder = '← Auto-filled from email';
         }
 
         // Copy email to username on input.
@@ -89,13 +122,108 @@ define([], function() {
     };
 
     /**
-     * Get placeholder text based on browser language.
+     * Setup password requirements live validation.
      *
-     * @return {string} Placeholder text.
+     * @param {HTMLElement} passwordField Password input.
      */
-    var getPlaceholderText = function() {
-        // Simple placeholder - will be replaced by email.
-        return '← Auto-filled from email';
+    var setupPasswordRequirements = function(passwordField) {
+        var requirements = {
+            'req-length': function(pwd) {
+                return pwd.length >= minLength;
+            },
+            'req-lowercase': function(pwd) {
+                return /[a-z]/.test(pwd);
+            },
+            'req-uppercase': function(pwd) {
+                return /[A-Z]/.test(pwd);
+            },
+            'req-number': function(pwd) {
+                return /[0-9]/.test(pwd);
+            },
+            'req-special': function(pwd) {
+                return /[^a-zA-Z0-9]/.test(pwd);
+            }
+        };
+
+        /**
+         * Check all requirements and update UI.
+         */
+        var checkRequirements = function() {
+            var password = passwordField.value;
+
+            for (var reqId in requirements) {
+                if (requirements.hasOwnProperty(reqId)) {
+                    var reqElement = document.getElementById(reqId);
+                    if (reqElement) {
+                        var met = requirements[reqId](password);
+                        var icon = reqElement.querySelector('.req-icon');
+
+                        if (met) {
+                            reqElement.classList.add('met');
+                            if (icon) {
+                                icon.textContent = '✓';
+                            }
+                        } else {
+                            reqElement.classList.remove('met');
+                            if (icon) {
+                                icon.textContent = '○';
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // Check on input.
+        passwordField.addEventListener('input', checkRequirements);
+        passwordField.addEventListener('paste', function() {
+            setTimeout(checkRequirements, 10);
+        });
+
+        // Initial check.
+        if (passwordField.value) {
+            checkRequirements();
+        }
+    };
+
+    /**
+     * Reorder form fields to put email first.
+     */
+    var reorderFields = function() {
+        var form = document.querySelector('form.mform');
+        if (!form) {
+            return;
+        }
+
+        // Get the field groups.
+        var usernameGroup = document.getElementById('id_username');
+        var emailGroup = document.getElementById('id_email');
+        var email2Group = document.getElementById('id_email2');
+
+        if (!usernameGroup || !emailGroup) {
+            return;
+        }
+
+        // Get the form row containers.
+        usernameGroup = usernameGroup.closest('.form-group, .fitem, [data-groupname]');
+        emailGroup = emailGroup.closest('.form-group, .fitem, [data-groupname]');
+
+        if (email2Group) {
+            email2Group = email2Group.closest('.form-group, .fitem, [data-groupname]');
+        }
+
+        // Move email fields before username.
+        if (usernameGroup && emailGroup && usernameGroup.parentNode === emailGroup.parentNode) {
+            var parent = usernameGroup.parentNode;
+
+            // Move email before username.
+            parent.insertBefore(emailGroup, usernameGroup);
+
+            // Move email2 after email.
+            if (email2Group) {
+                emailGroup.parentNode.insertBefore(email2Group, usernameGroup);
+            }
+        }
     };
 
     return {

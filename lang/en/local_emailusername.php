@@ -41,5 +41,13 @@ $string['showinfo_desc'] = 'Show an informational message on the registration fo
 $string['infomessage'] = 'Your email address will be used as your username for logging in.';
 $string['usernamemustmatchemail'] = 'Username must match your email address.';
 
+// Password requirements UI.
+$string['passwordrequirements'] = 'Password Requirements';
+$string['req_length'] = 'At least 8 characters';
+$string['req_lowercase'] = 'One lowercase letter';
+$string['req_uppercase'] = 'One uppercase letter';
+$string['req_number'] = 'One number';
+$string['req_special'] = 'One special character';
+
 // Privacy.
 $string['privacy:metadata'] = 'The Email as Username plugin does not store any personal data. It only modifies the registration form behavior.';

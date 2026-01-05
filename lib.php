@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @return void
  */
 function local_emailusername_extend_signup_form($mform) {
-    global $PAGE;
+    global $PAGE, $CFG;
 
     // Check if plugin is enabled.
     if (!get_config('local_emailusername', 'enabled')) {
@@ -41,20 +41,83 @@ function local_emailusername_extend_signup_form($mform) {
     $hideusername = get_config('local_emailusername', 'hideusername');
     $showinfo = get_config('local_emailusername', 'showinfo');
 
-    // Add info message if enabled - insert it before the username field.
+    // Add CSS to hide username field if needed (more reliable than JS).
+    if ($hideusername) {
+        $PAGE->requires->css_init_code('
+            #fitem_id_username,
+            #id_username,
+            [data-groupname="username"],
+            .form-group:has(#id_username),
+            .fitem:has(#id_username) {
+                display: none !important;
+            }
+        ');
+    }
+
+    // Add info message if enabled.
     if ($showinfo && !$hideusername) {
         $infomessage = get_string('infomessage', 'local_emailusername');
         $infoelement = $mform->createElement('static', 'emailusername_info', '',
-            '<div class="alert alert-info small mb-3">' . $infomessage . '</div>');
+            '<div class="alert alert-info small mb-3">
+                <i class="fa fa-info-circle mr-2"></i>' . $infomessage . '
+            </div>');
         $mform->insertElementBefore($infoelement, 'username');
     }
 
-    // Load the JavaScript module.
-    // Note: js_call_amd passes each array element as a separate argument,
-    // so we wrap our config object in another array.
+    // Add beautiful password requirements UI.
+    $passwordhtml = '
+    <div class="password-requirements-container mb-3" id="password-requirements">
+        <div class="password-requirements-title small text-muted mb-2">
+            ' . get_string('passwordrequirements', 'local_emailusername') . '
+        </div>
+        <div class="password-requirements-grid">
+            <div class="requirement" id="req-length">
+                <span class="req-icon">○</span>
+                <span class="req-text">' . get_string('req_length', 'local_emailusername') . '</span>
+            </div>
+            <div class="requirement" id="req-lowercase">
+                <span class="req-icon">○</span>
+                <span class="req-text">' . get_string('req_lowercase', 'local_emailusername') . '</span>
+            </div>
+            <div class="requirement" id="req-uppercase">
+                <span class="req-icon">○</span>
+                <span class="req-text">' . get_string('req_uppercase', 'local_emailusername') . '</span>
+            </div>
+            <div class="requirement" id="req-number">
+                <span class="req-icon">○</span>
+                <span class="req-text">' . get_string('req_number', 'local_emailusername') . '</span>
+            </div>
+            <div class="requirement" id="req-special">
+                <span class="req-icon">○</span>
+                <span class="req-text">' . get_string('req_special', 'local_emailusername') . '</span>
+            </div>
+        </div>
+    </div>';
+
+    // Try to insert after password field.
+    $passwordelement = $mform->createElement('static', 'password_requirements_ui', '', $passwordhtml);
+
+    // Check if passwordpolicyinfo exists and insert after it, otherwise after password.
+    if ($mform->elementExists('passwordpolicyinfo')) {
+        // Hide the ugly default password policy text.
+        $mform->removeElement('passwordpolicyinfo');
+    }
+
+    // Insert our beautiful password UI after the password field.
+    if ($mform->elementExists('password')) {
+        $mform->insertElementBefore($passwordelement, 'email');
+    }
+
+    // Load the JavaScript module with config.
     $PAGE->requires->js_call_amd('local_emailusername/signup', 'init', [
-        ['hideusername' => (bool) $hideusername],
+        [
+            'hideusername' => (bool) $hideusername,
+            'minlength' => !empty($CFG->minpasswordlength) ? (int) $CFG->minpasswordlength : 8,
+        ],
     ]);
+
+    // Add custom CSS for the form.
+    $PAGE->requires->css('/local/emailusername/styles.css');
 }
 
 /**
@@ -86,16 +149,13 @@ function local_emailusername_validate_extend_signup_form($data) {
 
 /**
  * Pre-process signup data to ensure username = email.
- * This is called before the user is created.
  *
  * @param array $data The signup data.
- * @return array Modified data.
+ * @return void
  */
 function local_emailusername_pre_signup_requests() {
     // Check if plugin is enabled.
     if (!get_config('local_emailusername', 'enabled')) {
         return;
     }
-
-    // This hook is called before signup, we'll handle data in post_signup if needed.
 }
