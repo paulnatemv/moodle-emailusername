@@ -64,17 +64,18 @@ define([], function() {
      * @param {Object} config Configuration.
      */
     var setupUsernameField = function(usernameField, emailField, config) {
-        // Find the username form group (parent container).
-        var usernameGroup = usernameField.closest('.form-group, .fitem, [data-groupname="username"]');
-
         if (config.hideusername) {
-            // Completely hide the username field and its container.
+            // Add body class to trigger CSS hiding (more reliable).
+            document.body.classList.add('emailusername-hide-username');
+
+            // Also hide via JS as backup.
+            var usernameGroup = usernameField.closest('.form-group, .fitem, [data-groupname="username"]');
             if (usernameGroup) {
                 usernameGroup.style.display = 'none';
             }
             usernameField.style.display = 'none';
 
-            // Also hide label if separate.
+            // Hide label if separate.
             var label = document.querySelector('label[for="id_username"]');
             if (label) {
                 var labelGroup = label.closest('.form-group, .fitem');
@@ -153,21 +154,13 @@ define([], function() {
 
             for (var reqId in requirements) {
                 if (requirements.hasOwnProperty(reqId)) {
-                    var reqElement = document.getElementById(reqId);
-                    if (reqElement) {
+                    var badge = document.getElementById(reqId);
+                    if (badge) {
                         var met = requirements[reqId](password);
-                        var icon = reqElement.querySelector('.req-icon');
-
                         if (met) {
-                            reqElement.classList.add('met');
-                            if (icon) {
-                                icon.textContent = '✓';
-                            }
+                            badge.classList.add('met');
                         } else {
-                            reqElement.classList.remove('met');
-                            if (icon) {
-                                icon.textContent = '○';
-                            }
+                            badge.classList.remove('met');
                         }
                     }
                 }

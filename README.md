@@ -87,19 +87,9 @@ Result: 😊 Users login with email → Never forget!
 
 **After (With Plugin):**
 ```
-┌─────────────────────────────────────────────────────┐
-│  PASSWORD REQUIREMENTS                              │
-│  ┌──────────────────┐  ┌──────────────────┐        │
-│  │ ✓ 8+ characters  │  │ ✓ One lowercase  │        │
-│  └──────────────────┘  └──────────────────┘        │
-│  ┌──────────────────┐  ┌──────────────────┐        │
-│  │ ✓ One uppercase  │  │ ✓ One number     │        │
-│  └──────────────────┘  └──────────────────┘        │
-│  ┌──────────────────┐                              │
-│  │ ○ One special    │  ← Not met yet               │
-│  └──────────────────┘                              │
-└─────────────────────────────────────────────────────┘
+[8+] [az] [AZ] [123] [#@!]   ← Compact inline badges with live validation
 ```
+Badges turn green as requirements are met. Hover for full description.
 
 ## Installation
 
@@ -154,6 +144,12 @@ For email addresses to work as usernames (they contain the `@` symbol), you must
 > **Note:** The plugin will show a warning in its settings page if this is not enabled.
 
 ## Changelog
+
+### v1.1.2
+- Fixed: Bug with css_init_code() method not existing in Moodle
+- Fixed: Hide username field now works reliably via CSS class on body
+- Improved: Password requirements UI - compact inline badges instead of large grid
+- Improved: Cleaner, simpler design for password hints
 
 ### v1.1.1
 - Added: Settings page warning when "Extended username characters" is not enabled

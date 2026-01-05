@@ -41,19 +41,6 @@ function local_emailusername_extend_signup_form($mform) {
     $hideusername = get_config('local_emailusername', 'hideusername');
     $showinfo = get_config('local_emailusername', 'showinfo');
 
-    // Add CSS to hide username field if needed (more reliable than JS).
-    if ($hideusername) {
-        $PAGE->requires->css_init_code('
-            #fitem_id_username,
-            #id_username,
-            [data-groupname="username"],
-            .form-group:has(#id_username),
-            .fitem:has(#id_username) {
-                display: none !important;
-            }
-        ');
-    }
-
     // Add info message if enabled.
     if ($showinfo && !$hideusername) {
         $infomessage = get_string('infomessage', 'local_emailusername');
@@ -64,34 +51,14 @@ function local_emailusername_extend_signup_form($mform) {
         $mform->insertElementBefore($infoelement, 'username');
     }
 
-    // Add beautiful password requirements UI.
+    // Add compact password requirements UI - simple one-liner with inline badges.
     $passwordhtml = '
-    <div class="password-requirements-container mb-3" id="password-requirements">
-        <div class="password-requirements-title small text-muted mb-2">
-            ' . get_string('passwordrequirements', 'local_emailusername') . '
-        </div>
-        <div class="password-requirements-grid">
-            <div class="requirement" id="req-length">
-                <span class="req-icon">○</span>
-                <span class="req-text">' . get_string('req_length', 'local_emailusername') . '</span>
-            </div>
-            <div class="requirement" id="req-lowercase">
-                <span class="req-icon">○</span>
-                <span class="req-text">' . get_string('req_lowercase', 'local_emailusername') . '</span>
-            </div>
-            <div class="requirement" id="req-uppercase">
-                <span class="req-icon">○</span>
-                <span class="req-text">' . get_string('req_uppercase', 'local_emailusername') . '</span>
-            </div>
-            <div class="requirement" id="req-number">
-                <span class="req-icon">○</span>
-                <span class="req-text">' . get_string('req_number', 'local_emailusername') . '</span>
-            </div>
-            <div class="requirement" id="req-special">
-                <span class="req-icon">○</span>
-                <span class="req-text">' . get_string('req_special', 'local_emailusername') . '</span>
-            </div>
-        </div>
+    <div class="pwd-req" id="password-requirements">
+        <span class="pwd-badge" id="req-length" title="' . get_string('req_length', 'local_emailusername') . '">8+</span>
+        <span class="pwd-badge" id="req-lowercase" title="' . get_string('req_lowercase', 'local_emailusername') . '">az</span>
+        <span class="pwd-badge" id="req-uppercase" title="' . get_string('req_uppercase', 'local_emailusername') . '">AZ</span>
+        <span class="pwd-badge" id="req-number" title="' . get_string('req_number', 'local_emailusername') . '">123</span>
+        <span class="pwd-badge" id="req-special" title="' . get_string('req_special', 'local_emailusername') . '">#@!</span>
     </div>';
 
     // Try to insert after password field.

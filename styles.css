@@ -6,72 +6,31 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/* Password Requirements Container */
-.password-requirements-container {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px;
-    padding: 16px 20px;
-    border: 1px solid #dee2e6;
-    margin-top: -10px;
+/* Compact Password Requirements - Simple One-liner */
+.pwd-req {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0;
 }
 
-.password-requirements-title {
+.pwd-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
     font-weight: 600;
-    color: #495057;
-    margin-bottom: 12px;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    border-radius: 4px;
+    background: #f1f3f4;
+    color: #5f6368;
+    border: 1px solid #dadce0;
+    cursor: default;
+    transition: all 0.2s ease;
 }
 
-.password-requirements-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 8px;
-}
-
-.requirement {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
-    font-size: 13px;
-}
-
-.requirement .req-icon {
-    font-size: 16px;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    color: #adb5bd;
-    transition: all 0.3s ease;
-}
-
-.requirement .req-text {
-    color: #6c757d;
-    transition: color 0.3s ease;
-}
-
-/* Met requirement state */
-.requirement.met {
-    background: #d4edda;
-    border-color: #28a745;
-}
-
-.requirement.met .req-icon {
-    color: #28a745;
-}
-
-.requirement.met .req-text {
-    color: #155724;
-    font-weight: 500;
+.pwd-badge.met {
+    background: #e6f4ea;
+    color: #137333;
+    border-color: #34a853;
 }
 
 /* Username field when readonly */
@@ -81,42 +40,21 @@
     color: #6c757d !important;
 }
 
+/* Hide username field when class is applied by JS */
+body.emailusername-hide-username #fitem_id_username,
+body.emailusername-hide-username #id_username,
+body.emailusername-hide-username [data-groupname="username"],
+body.emailusername-hide-username .form-group:has(#id_username),
+body.emailusername-hide-username .fitem:has(#id_username) {
+    display: none !important;
+}
+
 /* Info message styling */
 .alert.alert-info {
-    border-radius: 10px;
+    border-radius: 8px;
     border: none;
-    background: linear-gradient(135deg, #cfe2ff 0%, #b6d4fe 100%);
-    color: #084298;
-}
-
-/* Mobile responsive */
-@media (max-width: 576px) {
-    .password-requirements-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .password-requirements-container {
-        padding: 12px 16px;
-    }
-
-    .requirement {
-        padding: 10px 14px;
-    }
-}
-
-/* Animation for requirement check */
-@keyframes checkmark {
-    0% {
-        transform: scale(0);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.requirement.met .req-icon {
-    animation: checkmark 0.3s ease-out;
+    background: #e8f0fe;
+    color: #1967d2;
+    font-size: 13px;
+    padding: 10px 14px;
 }
